@@ -1,4 +1,5 @@
 import React from "react";
+import Action from "./Action";
 
 export default function GradesControl({ grades, onDelete, onPersist }) {
   const tableGrades = [];
@@ -35,19 +36,34 @@ export default function GradesControl({ grades, onDelete, onPersist }) {
     grades: currentGrades,
   });
 
+  const handleActionClick = (id, type) => {
+    const grade = grades.find((grade) => {
+      return grade.id === id;
+    });
+
+    if (type === "delete") {
+      onDelete(grade);
+    }
+
+    onPersist(grade);
+  };
+
   return (
     <div className="container center">
       {tableGrades.map(({ id, grades }) => {
+        const finalGrade = grades.reduce((acc, cur) => acc + cur.value, 0);
+        const gradeStyle =
+          finalGrade >= 70 ? styles.goodGrade : styles.badGrade;
+
         return (
-          <table className="striped center" key={id}>
+          <table style={styles.table} className="striped center" key={id}>
             <thead>
               <tr>
-                <th>Aluno</th>
-                <th>Disciplina</th>
-                <th>Avaliação</th>
-                <th>Nota</th>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
+                <th style={{ width: "20%" }}>Aluno</th>
+                <th style={{ width: "20%" }}>Disciplina</th>
+                <th style={{ width: "20%" }}>Avaliação</th>
+                <th style={{ width: "20%" }}>Nota</th>
+                <th style={{ width: "20%" }}>Ações</th>
               </tr>
             </thead>
 
@@ -59,19 +75,61 @@ export default function GradesControl({ grades, onDelete, onPersist }) {
                       <td>{student}</td>
                       <td>{subject}</td>
                       <td>{type}</td>
-                      <td>{value}</td>
-                      <td>&nbsp;</td>
-                      <td>&nbsp;</td>
+                      <td>{isDeleted ? "-" : value}</td>
+                      <td>
+                        <div>
+                          <Action
+                            onActionClick={handleActionClick}
+                            id={id}
+                            type={isDeleted ? "add" : "edit"}
+                          />
+                          {!isDeleted && (
+                            <Action
+                              onActionClick={handleActionClick}
+                              id={id}
+                              type="delete"
+                            />
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   );
                 }
               )}
             </tbody>
 
-            <tfoot></tfoot>
+            <tfoot>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style={{ textAlign: "right" }}>
+                  <strong>Total</strong>
+                </td>
+                <td>
+                  <span style={gradeStyle}>{finalGrade}</span>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         );
       })}
     </div>
   );
 }
+
+const styles = {
+  goodGrade: {
+    fontWeight: "bold",
+    color: "blue",
+  },
+  badGrade: {
+    fontWeight: "bold",
+    color: "red",
+  },
+  table: {
+    margin: "20px",
+    padding: "20px",
+    border: "1px solid lightgray",
+  },
+};

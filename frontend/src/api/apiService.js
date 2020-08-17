@@ -117,7 +117,7 @@ async function deleteGrade(grade) {
   return response.data;
 }
 
-async function getValidationGromGradeType(gradeType) {
+async function getValidationFromGradeType(gradeType) {
   const gradeValidation = GRADE_VALIDATION.find(
     (item) => item.gradeType === gradeType
   );
@@ -133,5 +133,5 @@ export {
   insertGrade,
   updateGrade,
   deleteGrade,
-  getValidationGromGradeType,
+  getValidationFromGradeType,
 };
