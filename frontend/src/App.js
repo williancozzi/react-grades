@@ -1,14 +1,46 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import * as api from "./api/apiService.js";
+import Spinner from "./components/Spinner.js";
+import GradesControl from "./components/GradesControl.js";
 
 export default function App() {
-  const testApi = async () => {
-    const result = await api.getAllGrades();
-    console.log(result);
+  const [allGrades, setAllGrades] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const getGrades = async () => {
+      const grades = await api.getAllGrades();
+      setTimeout(() => {
+        setAllGrades(grades);
+      }, 1500);
+    };
+
+    getGrades();
+  }, []);
+
+  const handleDelete = () => {
+    console.log("del");
   };
 
-  testApi();
+  const handlePersist = () => {
+    console.log("persist");
+  };
 
-  return <p>Olá Hooks!</p>;
+  return (
+    <div>
+      <h1 className="center">Controle de notas</h1>
+
+      {allGrades.length == 0 && <Spinner />}
+
+      {allGrades.length > 0 && (
+        <GradesControl
+          grades={allGrades}
+          onDelete={handleDelete}
+          onPersist={handlePersist}
+        />
+      )}
+    </div>
+  );
 }
