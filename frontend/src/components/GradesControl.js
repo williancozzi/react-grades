@@ -43,6 +43,8 @@ export default function GradesControl({ grades, onDelete, onPersist }) {
 
     if (type === "delete") {
       onDelete(grade);
+
+      return;
     }
 
     onPersist(grade);
@@ -130,6 +132,5 @@ const styles = {
   table: {
     margin: "20px",
     padding: "20px",
-    border: "1px solid lightgray",
   },
 };

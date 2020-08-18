@@ -15,7 +15,7 @@ export default function App() {
       const grades = await api.getAllGrades();
       setTimeout(() => {
         setAllGrades(grades);
-      }, 1500);
+      }, 1000);
     };
 
     getGrades();
@@ -42,7 +42,23 @@ export default function App() {
     setIsModalOpen(true);
   };
 
-  const handlePersistData = () => {};
+  const handlePersistData = async (formData) => {
+    const { id, newValue } = formData;
+
+    const newGrades = Object.assign([], allGrades);
+
+    const gradeToPersist = newGrades.find((grade) => grade.id === id);
+    gradeToPersist.value = newValue;
+
+    if (gradeToPersist.isDeleted) {
+      gradeToPersist.isDeleted = false;
+      await api.insertGrade(gradeToPersist);
+    } else {
+      await api.updateGrade(gradeToPersist);
+    }
+
+    setIsModalOpen(false);
+  };
 
   const handleClose = () => {
     setIsModalOpen(false);
